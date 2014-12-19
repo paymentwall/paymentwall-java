@@ -11,11 +11,11 @@ To use Paymentwall, all you need to do is to sign up for a Paymentwall Merchant 
 To open your merchant account and set up an application, you can [sign up here](http://paymentwall.com/signup/merchant?source=gh).
 
 #Installation
-To install the library in your environment, you can download the [ZIP archive](https://github.com/paymentwall/paymentwall-Java/archive/master.zip), unzip it and place into your project.
+To install the library in your environment, you can download the [ZIP archive](https://github.com/paymentwall/paymentwall-java/archive/master.zip), unzip it and place into your project.
 
 Alternatively, you can run:
 
-  <code> git clone git://github.com/paymentwall/paymentwall-Java.git </code>
+  <code> git clone git://github.com/paymentwall/paymentwall-java.git </code>
 
 Then use a code sample below.
 
@@ -23,26 +23,22 @@ Then use a code sample below.
 
 ##Adding Paymentwall to your project using Apache Maven
 
-<pre><code>
-	<dependencies>
-        <dependency>
-            <groupId>com.paymentwall</groupId>
-			<artifactId>java</artifactId>
-			<version>1.0</version>
-        </dependency>
+    <dependencies>
+      <dependency>
+        <groupId>com.paymentwall</groupId>
+        <artifactId>java</artifactId>
+        <version>1.0</version>
+      </dependency>
     </dependencies>
-</code></pre>
 
 ##Digital Goods API
 
 ####Initializing Paymentwall
 
-<pre><code>
-	@page import com.paymentwall.java.*;
-	PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
-	PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
-	PaymentwallBase.setApiType(PaymentwallBase.API_GOODS);
-</code></pre>
+    @page import com.paymentwall.java.*;
+    PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
+    PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
+    PaymentwallBase.setApiType(PaymentwallBase.API_GOODS);
 
 ####Widget Call
 
@@ -50,93 +46,81 @@ Then use a code sample below.
 
 The widget is a payment page hosted by Paymentwall that embeds the entire payment flow: selecting the payment method, completing the billing details, and providing customer support via the Help section. You can redirect the users to this page or embed it via iframe. Below is an example that renders an iframe with Paymentwall Widget.
 
-<pre><code>
-	final PaymentwallProduct product = new PaymentwallProductBuilder("product301") {{
-	  setAmount(0.99);
-	  setCurrencyCode("USD");
-	  setName("100 coins");
-	  setProductType(PaymentwallProduct.TYPE_FIXED);
-	}}.buildPaymentwallProduct();
-	PaymentwallWidgetBuilder widgetBuilder = new PaymentwallWidgetBuilder("user12345","p1_1");
-	widgetBuilder.setProduct(product);
-	PaymentwallWidget widget = widgetBuilder.build();
-	out.println(widget.getHtmlCode());
-</code></pre>
+    final PaymentwallProduct product = new PaymentwallProductBuilder("product301") {{
+      setAmount(0.99);
+      setCurrencyCode("USD");
+      setName("100 coins");
+      setProductType(PaymentwallProduct.TYPE_FIXED);
+    }}.buildPaymentwallProduct();
+    PaymentwallWidgetBuilder widgetBuilder = new PaymentwallWidgetBuilder("user12345","p1_1");
+    widgetBuilder.setProduct(product);
+    PaymentwallWidget widget = widgetBuilder.build();
+    out.println(widget.getHtmlCode());
 
 ####Pingback Processing
 
 The Pingback is a webhook notifying about a payment being made. Pingbacks are sent via HTTP/HTTPS to your servers. To process pingbacks use the following code:
 
-<pre><code>
-	PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
-	if (pingback.validate(true)) {
-	  String goods = pingback.getProductId();
-	  String userId = pingback.getUserId();
-	  if (pingback.isDeliverable()) {
-	    // deliver Product to user with userId
-	  } else if (pingback.isCancelable()) {
-	    // withdraw Product from user with userId
-	  }
-	  out.println("OK");
-	} else
-	  out.println(pingback.getErrorSummary());
-</code></pre>
+    PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
+    if (pingback.validate(true)) {
+      String goods = pingback.getProductId();
+      String userId = pingback.getUserId();
+      if (pingback.isDeliverable()) {
+        // deliver Product to user with userId
+      } else if (pingback.isCancelable()) {
+        // withdraw Product from user with userId
+      }
+      out.println("OK");
+    } else
+      out.println(pingback.getErrorSummary());
 
 ##Virtual Currency API
 
 ####Initializing Paymentwall
 
-<pre><code>
-	@page import com.paymentwall.java.*;
-	PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
-	PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
-	PaymentwallBase.setApiType(PaymentwallBase.API_VC);
-</code></pre>
+    @page import com.paymentwall.java.*;
+    PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
+    PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
+    PaymentwallBase.setApiType(PaymentwallBase.API_VC);
 
 ####Widget Call
 
-<pre><code>
-	@page import java.util.ArrayList;
-	@page import java.util.LinkedHashMap;
+    @page import java.util.ArrayList;
+    @page import java.util.LinkedHashMap;
     PaymentwallWidgetBuilder widgetBuilder = new PaymentwallWidgetBuilder("user12345","p1_1");
     LinkedHashMap<String,ArrayList<String>> additionalparameters = new LinkedHashMap<String, ArrayList<String>>();
     additionalparameters.put("email",new ArrayList<String>(){{add("user@hostname.com");}});
     widgetBuilder.setExtraParams(additionalparameters);
     PaymentwallWidget widget = widgetBuilder.build();
     out.println(widget.getHtmlCode());
-</code></pre>
 
 ####Pingback Processing
 
-<pre><code>
-	PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
-	if (pingback.validate(true)) {
-	  Double currency = pingback.getVirtualCurrencyAmount();
-	  String userId = pingback.getUserId();
-	  if (pingback.isDeliverable()) {
-	    // deliver Product to user with userId
-	  } else if (pingback.isCancelable()) {
-	    // withdraw Product from user with userId
-	  }
-	  out.println("OK");
-	} else
-	  out.println(pingback.getErrorSummary());
-</code></pre>
+    PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
+    if (pingback.validate(true)) {
+      Double currency = pingback.getVirtualCurrencyAmount();
+      String userId = pingback.getUserId();
+      if (pingback.isDeliverable()) {
+        // deliver Product to user with userId
+      } else if (pingback.isCancelable()) {
+        // withdraw Product from user with userId
+      }
+      out.println("OK");
+    } else
+      out.println(pingback.getErrorSummary());
 
 ##Cart API
 
 ####Initializing Paymentwall
 
-<pre><code>
-	@page import com.paymentwall.java.*;
-	PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
-	PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
-	PaymentwallBase.setApiType(PaymentwallBase.API_CART);
-</code></pre>
+    @page import com.paymentwall.java.*;
+    PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
+    PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
+    PaymentwallBase.setApiType(PaymentwallBase.API_CART);
+
 
 You have to set up your products in merchant area for exact regions first in order to use widget call example code below.
 
-<pre><code>
     PaymentwallWidgetBuilder widgetBuilder = new PaymentwallWidgetBuilder("user12345","p1_1");
     LinkedHashMap<String,ArrayList<String>> additionalparameters = new LinkedHashMap<String, ArrayList<String>>();
     additionalparameters.put("email",new ArrayList<String>(){{add("user@hostname.com");}});
@@ -155,21 +139,20 @@ You have to set up your products in merchant area for exact regions first in ord
     }});
     PaymentwallWidget widget = widgetBuilder.build();
     out.println(widget.getHtmlCode());
-</code></pre>
+
 
 ####Pingback Processing
 
-<pre><code>
-	PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
-	if (pingback.validate(true)) {
-	  ArrayList<PaymentwallProduct> goods = pingback.getProducts();
-	  String userId = pingback.getUserId();
-	  if (pingback.isDeliverable()) {
-	    // deliver Product to user with userId
-	  } else if (pingback.isCancelable()) {
-	    // withdraw Product from user with userId
-	  }
-	  out.println("OK");
-	} else
-	  out.println(pingback.getErrorSummary());
-</code></pre>
+    PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
+    if (pingback.validate(true)) {
+      ArrayList<PaymentwallProduct> goods = pingback.getProducts();
+      String userId = pingback.getUserId();
+      if (pingback.isDeliverable()) {
+        // deliver Product to user with userId
+      } else if (pingback.isCancelable()) {
+        // withdraw Product from user with userId
+      }
+      out.println("OK");
+    } else
+      out.println(pingback.getErrorSummary());
+
