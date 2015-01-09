@@ -1,15 +1,12 @@
 package com.paymentwall.java;
+import java.net.URLDecoder;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-abstract public class PaymentwallBase {
+abstract public class Base {
     /**
      * Paymentwall library version
      */
-    static final String VERSION = "1.1.1";
+    static final String VERSION = "1.0.1";
 
     /**
      * URLs for Paymentwall Pro
@@ -34,7 +31,7 @@ abstract public class PaymentwallBase {
     /**
      * Signature versions
      */
-    static public final int DEFAULT_SIGNATURE_VERSION = 2;
+    static public final int DEFAULT_SIGNATURE_VERSION = 3;
     static public final int SIGNATURE_VERSION_1 = 1;
     static public final int SIGNATURE_VERSION_2 = 2;
     static public final int SIGNATURE_VERSION_3 = 3;
@@ -66,8 +63,8 @@ abstract public class PaymentwallBase {
     static String proApiKey;
 
     /**
-     * @param int apiType API type, Paymentwall_Base::API_VC for Virtual Currency, Paymentwall_Base::API_GOODS for Digital Goods
-     * Paymentwall_Base::API_CART for Cart, more details at http://paymentwall.com/documentation
+     * @param apiType_ API type, Base.API_VC for Virtual Currency, Base.API_GOODS for Digital Goods
+     * Base.API_CART for Cart, more details at http://paymentwall.com/documentation
      */
     public static void setApiType(int apiType_) {
         apiType = apiType_;
@@ -78,7 +75,7 @@ abstract public class PaymentwallBase {
     }
 
     /**
-     * @param string appKey application key of your application, can be found inside of your Paymentwall Merchant Account
+     * @param appKey_ application key of your application, can be found inside of your Paymentwall Merchant Account
      */
     public static void setAppKey(String appKey_) {
         appKey = appKey_;
@@ -89,7 +86,7 @@ abstract public class PaymentwallBase {
     }
 
     /**
-     * @param string secretKey secret key of your application, can be found inside of your Paymentwall Merchant Account
+     * @param secretKey_ secret key of your application, can be found inside of your Paymentwall Merchant Account
      */
     public static void setSecretKey(String secretKey_) {
         secretKey = secretKey_;
@@ -113,7 +110,7 @@ abstract public class PaymentwallBase {
     /**
      * Fill the array with the errors found at execution
      *
-     * @param err
+     * @param err error description
      * @return int List size
      */
     protected int appendToErrors(String err) {
@@ -150,23 +147,34 @@ abstract public class PaymentwallBase {
         throw new IllegalArgumentException("places should be more than or equals 0");
     }
 
-    public static LinkedHashMap parseQuery(Map<String,String[]> _GET) {
+    public static LinkedHashMap<String,ArrayList<String>> parseQuery(Map<String,String[]> _GET) {
         LinkedHashMap<String, ArrayList<String>> parameters = new LinkedHashMap<String, ArrayList<String>>();
 
         if (!_GET.isEmpty())
             for (final Map.Entry<String,String[]> entry : _GET.entrySet())
-                if (entry.getKey().contains("[")&&entry.getKey().contains("]")) {
+                if (entry.getKey().contains("[") && entry.getKey().contains("]")) {
                     String key = Arrays.asList(entry.getKey().split("\\[\\d*\\]")).get(0);
-
                     //int index = Integer.parseInt(entry.getKey().replace(key, "").substring(0, entry.getKey().replace(key,"").length()-1));
-
                     ArrayList<String> this_parameter_keys = new ArrayList<String>();
+
                     if (parameters.containsKey(key))
                         this_parameter_keys.addAll(parameters.get(key));
                     this_parameter_keys.addAll(Arrays.asList(entry.getValue()));
 
                     parameters.put(key, this_parameter_keys);
                 } else parameters.put(entry.getKey(), new ArrayList<String>(Arrays.asList(entry.getValue())));
+
+        Set<Map.Entry<String,ArrayList<String>>> entries = parameters.entrySet();
+        for (Map.Entry<String,ArrayList<String>> entry : entries) {
+            ArrayList<String> values = new ArrayList<String>();
+            for (String each : entry.getValue())
+                try {
+                    values.add(URLDecoder.decode(each, "UTF-8"));
+                    parameters.replace(entry.getKey(), values);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
         return parameters;
     }
 }

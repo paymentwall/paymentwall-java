@@ -5,28 +5,33 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class PaymentwallWidget extends PaymentwallBase
+public class Widget extends Base
 {
     /**
      * Widget call URL
      */
     public final String BASE_URL = "https://api.paymentwall.com/api";
-    protected String userId;
-    protected String widgetCode;
-    protected ArrayList<PaymentwallProduct> products;
-    protected LinkedHashMap<String,ArrayList<String>> extraParams;
+
     /**
-     * param String userId identifier of the end-user who is viewing the widget
-     * param String widgetCode e.g. p1 or p1_1, can be found inside of your Paymentwall Merchant account in the Widgets section
-     * param ArrayList products array that consists of Paymentwall_Product entities; for Flexible Widget Call use array of 1 product
-     * param ArrayList extraParams associative array of additional params that will be included into the widget URL,
+     * @param userId identifier of the end-user who is viewing the widget
+     * @param widgetCode e.g. p1 or p1_1, can be found inside of your Paymentwall Merchant account in the Widgets section
+     * @param ArrayList products array that consists of Product entities; for Flexible Widget Call use array of 1 product
+     * @param ArrayList extraParams associative array of additional params that will be included into the widget URL,
      * e.g. "sign_version" or "email". Full list of parameters for each API is available at http://paymentwall.com/documentation
      */
-    public PaymentwallWidget(String userId_, String widgetCode_, ArrayList<PaymentwallProduct> products_, LinkedHashMap<String,ArrayList<String>> extraParams_) {
+
+    protected String userId;
+    protected String widgetCode;
+    protected ArrayList<Product> products;
+    protected LinkedHashMap<String,String> extraParams;
+
+    public Widget(String userId_, String widgetCode_, ArrayList<Product> products_, LinkedHashMap<String, String> extraParams_) {
         userId = userId_;
         widgetCode = widgetCode_;
         products = products_;
@@ -55,20 +60,20 @@ public class PaymentwallWidget extends PaymentwallBase
         if (getApiType() == API_GOODS) {
             if (!products.isEmpty()) {
                 if (products.size() == 1) {
-                    PaymentwallProduct postTrialProduct = null;
-                    PaymentwallProduct product = products.get(0);
+                    Product postTrialProduct = null;
+                    Product product = products.get(0);
                     if (product.getTrialProduct() != null) {
                         postTrialProduct = product;
-                        product = product.getTrialProduct();
+                        product = postTrialProduct.getTrialProduct();
                     }
-                    final PaymentwallProduct finalproduct = product;
-                    final PaymentwallProduct finaltrialproduct = postTrialProduct;
+                    final Product finalproduct = product;
+                    final Product finaltrialproduct = postTrialProduct;
                     params.put("amount",new ArrayList<String>(){{add(Double.toString(finalproduct.getAmount()));}});
                     params.put("currencyCode",new ArrayList<String>(){{add(finalproduct.getCurrencyCode());}});
                     params.put("ag_name", new ArrayList<String>(){{add(finalproduct.getName());}});
                     params.put("ag_external_id", new ArrayList<String>(){{add(finalproduct.getId());}});
                     params.put("ag_type", new ArrayList<String>(){{add(finalproduct.getType());}});
-                    if (product.getType().equals(PaymentwallProduct.TYPE_SUBSCRIPTION)) {
+                    if (product.getType().equals(Product.TYPE_SUBSCRIPTION)) {
                         params.put("ag_period_length", new ArrayList<String>(){{add(Integer.toString(finalproduct.getPeriodLength()));}});
                         params.put("ag_period_type", new ArrayList<String>(){{add(finalproduct.getPeriodType());}});
                         if (product.isRecurring()) {
@@ -92,7 +97,7 @@ public class PaymentwallWidget extends PaymentwallBase
             ArrayList<String> external_ids = new ArrayList<String>();
             ArrayList<String> prices = new ArrayList<String>();
             ArrayList<String> currencies = new ArrayList<String>();
-            for (PaymentwallProduct product : products) {
+            for (Product product : products) {
                 external_ids.add(product.getId()); //external_ids
                 if (product.getAmount()>0) {
                     prices.add(Double.toString(product.getAmount())); //prices
@@ -107,21 +112,24 @@ public class PaymentwallWidget extends PaymentwallBase
         }
         String signatureVersion;
         if (extraParams.containsKey("sign_version") && !extraParams.get("sign_version").isEmpty()) {
-            params.put("sign_version",extraParams.get("sign_version"));
-            signatureVersion = extraParams.get("sign_version").get(0);
+
+            params.put("sign_version",(new ArrayList<String>(){{add(extraParams.get("sign_version"));}})) ;
+            signatureVersion = extraParams.get("sign_version");
         } else {
             signatureVersion = Integer.toString(getDefaultSignatureVersion());
             params.put("sign_version", new ArrayList<String>(){{ add(Integer.toString(getDefaultSignatureVersion()));}});
         }
 
-        TreeMap<String,ArrayList<String>> finalparams = new TreeMap<String, ArrayList<String>>();
+        TreeMap<String,ArrayList<String>> sortedParams = new TreeMap<String, ArrayList<String>>();
         {
-            params.putAll(extraParams);
-            finalparams.putAll(params);
+            for (final Map.Entry<String,String> each : extraParams.entrySet()) {
+                params.put(each.getKey(),new ArrayList<String>(){{ add(each.getValue()); }});
+            }
+            sortedParams.putAll(params);
             try {
                 ArrayList<String> signature = new ArrayList<String>();
                 signature.add(calculateSignature(params, getSecretKey(), Integer.parseInt(signatureVersion)));
-                finalparams.put("sign",signature);
+                sortedParams.put("sign", signature);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -130,7 +138,7 @@ public class PaymentwallWidget extends PaymentwallBase
         String baseString;
 
         List<NameValuePair> list = new ArrayList<NameValuePair>();
-        for(Map.Entry<String,ArrayList<String>> entry : finalparams.entrySet()) {
+        for(Map.Entry<String,ArrayList<String>> entry : sortedParams.entrySet()) {
 
             if (entry.getValue().size()==1)
                 list.add(new BasicNameValuePair(entry.getKey(),entry.getValue().get(0)));
@@ -146,7 +154,7 @@ public class PaymentwallWidget extends PaymentwallBase
     /**
      * Return HTML code for the widget
      *
-     * param array attributes associative array of additional HTML attributes, e.g. array("width" => "100%")
+     * @param attributes associative array of additional HTML attributes, e.g. array("width" => "100%")
      * return string
      */
     public String getHtmlCode(LinkedHashMap<String,String> attributes) {
@@ -165,57 +173,47 @@ public class PaymentwallWidget extends PaymentwallBase
     }
 
     public String getHtmlCode() {
-        LinkedHashMap<String,String> defaultAttributes = new LinkedHashMap<String,String>();
-        {
-            defaultAttributes.put("frameborder","0");
-            defaultAttributes.put("width","750");
-            defaultAttributes.put("height","800");
-        }
-        String attributesQuery = "";
-        for (Map.Entry<String,String> entry : defaultAttributes.entrySet()) {
-            attributesQuery += " " + entry.getKey() + "=\"" + entry.getValue() + "\"";
-        }
-        return "<iframe src=\"" + getUrl() + "\" " + attributesQuery + "></iframe>";
+        return getHtmlCode(new LinkedHashMap<String, String>());
     }
     /**
      * Build controller URL depending on API type
      *
-     * param string widget code of the widget
-     * param bool flexibleCall
+     * @param widget code of the widget
+     * @param flexibleCall
      * return string
      */
-    protected String buildController(String widget) {
+    protected String buildController(String widget, boolean flexibleCall) {
         switch (getApiType()) {
-            case API_VC : if (!widget.matches("/^w|s|mw/")) return CONTROLLER_PAYMENT_VIRTUAL_CURRENCY;
-            case API_GOODS : if (!widget.matches("/^w|s|mw/")) return CONTROLLER_PAYMENT_DIGITAL_GOODS;
+            case API_VC : if (!widget.matches("^(w|s|mw).*")) return CONTROLLER_PAYMENT_VIRTUAL_CURRENCY;
+            case API_GOODS : if (!flexibleCall) {if (!widget.matches("^(w|s|mw).*")) return CONTROLLER_PAYMENT_DIGITAL_GOODS; else return ""; } else return  CONTROLLER_PAYMENT_DIGITAL_GOODS;
             default: return CONTROLLER_PAYMENT_CART;
         }
+    }
+
+    protected String buildController(String widget) {
+
+        return buildController(widget, false);
     }
     /**
      * Build signature for the widget specified
      *
-     * param array params
-     * param string secret Paymentwall Secret Key
-     * param int version Paymentwall Signature Version
+     * @param params parameters used for signature calculation
+     * @param secret Paymentwall Secret Key
+     * @param version Paymentwall Signature Version
      * return string
      */
-    public static String calculateSignature(LinkedHashMap<String, ArrayList<String>> params, String secret, int version) throws Exception {
+    public static String calculateSignature(LinkedHashMap<String, ArrayList<String>> params, String secret, int version) throws NoSuchElementException {
         String baseString = "";
 
-        if (!params.containsKey("uid")) throw new Exception("No uid is present!");
-
         if (version == SIGNATURE_VERSION_1) {
-            baseString += params.containsKey("uid") ? params.get("uid") : "";
+            if (!params.containsKey("uid")) throw new NoSuchElementException("No uid is present!");
 
+            baseString += !params.get("uid").isEmpty() ? params.get("uid").get(0) : "";
             baseString += secret;
+
             return DigestUtils.md5Hex(baseString);
-        }
-
-        params.remove("sign");
-        params.remove("sig");
-
-        TreeMap<String,ArrayList<String>> sortedParams = new TreeMap<String, ArrayList<String>>();
-        if ((version == SIGNATURE_VERSION_2 || version == SIGNATURE_VERSION_3) && params.size()>1) {
+        } else {
+            TreeMap<String,ArrayList<String>> sortedParams = new TreeMap<String, ArrayList<String>>();
             sortedParams.putAll(params);
             for(Map.Entry<String,ArrayList<String>> pair : sortedParams.entrySet()) {
                 if (pair.getValue().size()==1)
@@ -223,12 +221,23 @@ public class PaymentwallWidget extends PaymentwallBase
                 else for (int i=0; i<pair.getValue().size(); i++) baseString+= pair.getKey()+"["+i+"]" + "=" + pair.getValue().get(i);
             }
             baseString += secret;
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(baseString.getBytes("UTF-8"));
-            if (version == SIGNATURE_VERSION_3) return String.format("%032X", new BigInteger(1, md.digest())).toLowerCase();
-            return DigestUtils.md5Hex(baseString);
-        }
+            MessageDigest sha;
+            MessageDigest md;
+            try {
+                sha = MessageDigest.getInstance("SHA-256");
+                sha.update(baseString.getBytes("UTF-8"));
+                md = MessageDigest.getInstance("MD5");
+                md.update(baseString.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return "";
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+                return "";
+            }
+            if (version == SIGNATURE_VERSION_3) return String.format("%032X", new BigInteger(1, sha.digest())).toLowerCase();
 
-        return "wrong sign_version";
+            return String.format("%032X", new BigInteger(1, md.digest())).toLowerCase();
+        }
     }
 }

@@ -1,14 +1,12 @@
 package com.paymentwall.java;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class PaymentwallPingback extends PaymentwallBase {
+public class Pingback extends Base {
     /**
      * Pingback types
      */
@@ -36,28 +34,23 @@ public class PaymentwallPingback extends PaymentwallBase {
     protected String ipAddress;
 
     /**
-     * @param map parameters array of parameters received by pingback processing script, e.g. _GET
-     * @param string ipAddress IP address from where the pingback request originates, e.g. "127.0.0.1"
+     * @param parameters_ array of parameters received by pingback processing script, e.g. _GET
+     * @param ipAddress_ IP address from where the pingback request originates, e.g. "127.0.0.1"
      */
-    public PaymentwallPingback(LinkedHashMap<String,ArrayList<String>> parameters_, String ipAddress_) {
-        parameters = parameters_;
+    public Pingback(Map<String, String[]> parameters_, String ipAddress_) {
+        parameters = Base.parseQuery(parameters_);
         ipAddress = ipAddress_;
     }
 
     /**
      * Check whether pingback is valid
      *
-     * @param bool skipIpWhitelistCheck if IP whitelist check should be skipped, e.g. if you have a load-balancer changing the IP
+     * @param skipIpWhitelistCheck if IP whitelist check should be skipped, e.g. if you have a load-balancer changing the IP
      * @return bool
      */
 
-    public boolean validate() {
-        return validate(false);
-    }
-
-    public boolean validate(boolean skipIpWhitelistCheck) {
+    public boolean validate(boolean skipIpWhitelistCheck) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         boolean validated = false;
-
         if (isParametersValid())
             if (isIpAddressValid() || skipIpWhitelistCheck)
                 if (isSignatureValid())
@@ -68,12 +61,16 @@ public class PaymentwallPingback extends PaymentwallBase {
         return validated;
     }
 
+    public boolean validate() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return validate(false);
+    }
+
     /**
      * @return bool
      */
 
 
-    public boolean isSignatureValid() {
+    public boolean isSignatureValid() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         LinkedHashMap<String, ArrayList<String>> signatureParamsToSign = new LinkedHashMap<String, ArrayList<String>>();
         ArrayList<String> signatureParams;
         if (getApiType() == API_VC) {
@@ -103,18 +100,19 @@ public class PaymentwallPingback extends PaymentwallBase {
     }
 
         if (!(parameters.containsKey("sign_version")))
-            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(SIGNATURE_VERSION_1));}});
+            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(DEFAULT_SIGNATURE_VERSION));}});
 
         if (parameters.get("sign_version").isEmpty()||parameters.get("sign_version").get(0).equals(""))
-            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(SIGNATURE_VERSION_1));}});
+            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(DEFAULT_SIGNATURE_VERSION));}});
 
         if (parameters.get("sign_version").get(0).equals(Integer.toString(SIGNATURE_VERSION_1)))
             for(String field : signatureParams)
-                signatureParamsToSign.put(field, parameters.containsKey(field) ? parameters.get(field) : new ArrayList<String>());
+                signatureParamsToSign.put(field, parameters.containsKey(field) ? parameters.get(field) : new ArrayList<String>(){{add("");}});
         else signatureParamsToSign.putAll(parameters);
 
         String signatureCalculated = calculateSignature(signatureParamsToSign, secretKey, Integer.parseInt(parameters.get("sign_version").get(0)));
         String signature = parameters.containsKey("sig") ? parameters.get("sig").get(0) : "";
+        System.out.println(signature + "==" + signatureCalculated);
         return signature.equals(signatureCalculated);
     }
 
@@ -169,7 +167,7 @@ public class PaymentwallPingback extends PaymentwallBase {
     /**
      * Get pingback parameter
      *
-     * @param key
+     * @param key links to element in params hashmap by key
      * @return string
      */
     public ArrayList<String> getParameter(String key) {
@@ -245,7 +243,12 @@ public class PaymentwallPingback extends PaymentwallBase {
      * @return int
      */
     public int getProductPeriodLength() {
-        return Integer.parseInt(getParameter("slength").get(0));
+        try {
+            return Integer.parseInt(getParameter("slength").get(0));
+        }
+        catch (NumberFormatException e) {
+            return 0; // not a number or empty value
+        }
     }
 
     /**
@@ -258,21 +261,21 @@ public class PaymentwallPingback extends PaymentwallBase {
     /**
      * @return Paymentwall_Product
      */
-    public PaymentwallProduct getProduct()  {
-        PaymentwallProductBuilder a = new PaymentwallProductBuilder(getProductId());
+    public Product getProduct()  {
+        ProductBuilder a = new ProductBuilder(getProductId());
         {
             a.setPeriodType(getProductPeriodType());
             a.setPeriodLength(getProductPeriodLength());
-            a.setProductType(getProductPeriodLength() > 0 ? PaymentwallProduct.TYPE_SUBSCRIPTION : PaymentwallProduct.TYPE_FIXED);
+            a.setProductType(getProductPeriodLength() > 0 ? Product.TYPE_SUBSCRIPTION : Product.TYPE_FIXED);
         }
-        return a.buildPaymentwallProduct();
+        return a.build();
     }
 
     /**
      * @return array Paymentwall_Product
      */
-    public ArrayList<PaymentwallProduct> getProducts() { //
-        ArrayList<PaymentwallProduct> result = new ArrayList<PaymentwallProduct>();
+    public ArrayList<Product> getProducts() { //
+        ArrayList<Product> result = new ArrayList<Product>();
         ArrayList<String> productIds = new ArrayList<String>();
 
         if (!getParameter("goodsid").isEmpty())
@@ -280,7 +283,7 @@ public class PaymentwallPingback extends PaymentwallBase {
 
         if (!productIds.isEmpty()) {
             for(String Id : productIds) {
-                result.add(new PaymentwallProductBuilder(Id).buildPaymentwallProduct());
+                result.add(new ProductBuilder(Id).build());
             }
         }
 
@@ -346,49 +349,48 @@ public class PaymentwallPingback extends PaymentwallBase {
     /**
      * Build signature for the pingback received
      *
-     * @param array params
-     * @param string secret Paymentwall Secret Key
-     * @param int version Paymentwall Signature Version
+     * @param params represents parameters that are used for signature calculation
+     * @param secret Paymentwall Secret Key
+     * @param version Paymentwall Signature Version
      * @return string
      */
     protected String calculateSignature(LinkedHashMap<String,ArrayList<String>> params, String secret, int version) {
         String baseString = "";
 
-        if (!params.containsKey("uid")) appendToErrors("No uid is present!");
-
-        if (version == SIGNATURE_VERSION_1) {
-            baseString += params.containsKey("uid") ? params.get("uid") : "";
-
-            baseString += secret;
-            return DigestUtils.md5Hex(baseString);
-        }
-
-        params.remove("sign");
         params.remove("sig");
+        Set<Map.Entry<String, ArrayList<String>>> entries;
 
-        TreeMap<String,ArrayList<String>> sortedParams = new TreeMap<String, ArrayList<String>>();
-        if ((version == SIGNATURE_VERSION_2 || version == SIGNATURE_VERSION_3) && params.size()>1) {
+        if ((version == SIGNATURE_VERSION_2) || (version == SIGNATURE_VERSION_3)) {
+            TreeMap<String, ArrayList<String>> sortedParams = new TreeMap<String, ArrayList<String>>();
             sortedParams.putAll(params);
-            for(Map.Entry<String,ArrayList<String>> pair : sortedParams.entrySet()) {
-                if (pair.getValue().size()==1)
-                    baseString += pair.getKey() + "=" + pair.getValue().get(0);
-                else for (int i=0; i<pair.getValue().size(); i++) baseString+= pair.getKey()+"["+i+"]" + "=" + pair.getValue().get(i);
-            }
-            baseString += secret;
-            MessageDigest md = null;
-            try {
-                md = MessageDigest.getInstance("SHA-256");
-                md.update(baseString.getBytes("UTF-8"));
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            entries = sortedParams.entrySet();
+        } else entries = params.entrySet();
 
-            if (version == SIGNATURE_VERSION_3) return String.format("%032X", new BigInteger(1, md.digest())).toLowerCase();
-            return DigestUtils.md5Hex(baseString);
+        for (Map.Entry<String, ArrayList<String>> pair : entries)
+            if ( pair.getKey().equals("goodsid") && getApiType()==API_CART )
+                for (int i = 0; i < pair.getValue().size(); i++)
+                    baseString += pair.getKey() + "[" + i + "]" + "=" + pair.getValue().get(i);
+            else baseString += pair.getKey() + "=" + pair.getValue().get(0);
+
+        baseString += secret;
+        System.out.println("basestring: "+baseString);
+
+        MessageDigest sha;
+        MessageDigest md;
+        try {
+            sha = MessageDigest.getInstance("SHA-256");
+            sha.update(baseString.getBytes("UTF-8"));
+            md = MessageDigest.getInstance("MD5");
+            md.update(baseString.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return "";
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
         }
+        if (version == SIGNATURE_VERSION_3) return String.format("%032X", new BigInteger(1, sha.digest())).toLowerCase();
 
-        return "wrong sign_version";
+        return String.format("%032X", new BigInteger(1, md.digest())).toLowerCase();
     }
 }

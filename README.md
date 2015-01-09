@@ -36,9 +36,9 @@ Then use a code sample below.
 ####Initializing Paymentwall
 
     @page import com.paymentwall.java.*;
-    PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
-    PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
-    PaymentwallBase.setApiType(PaymentwallBase.API_GOODS);
+    Base.setAppKey("YOUR_APPLICATION_KEY");
+    Base.setSecretKey("YOUR_SECRET_KEY");
+    Base.setApiType(Base.API_GOODS);
 
 ####Widget Call
 
@@ -46,22 +46,25 @@ Then use a code sample below.
 
 The widget is a payment page hosted by Paymentwall that embeds the entire payment flow: selecting the payment method, completing the billing details, and providing customer support via the Help section. You can redirect the users to this page or embed it via iframe. Below is an example that renders an iframe with Paymentwall Widget.
 
-    final PaymentwallProduct product = new PaymentwallProductBuilder("product301") {{
+    final Product product = new ProductBuilder("product301") {{
       setAmount(0.99);
       setCurrencyCode("USD");
       setName("100 coins");
-      setProductType(PaymentwallProduct.TYPE_FIXED);
-    }}.buildPaymentwallProduct();
-    PaymentwallWidgetBuilder widgetBuilder = new PaymentwallWidgetBuilder("user12345","p1_1");
+      setProductType(Product.TYPE_FIXED);
+    }}.build();
+    WidgetBuilder widgetBuilder = new WidgetBuilder("user12345","p1_1");
     widgetBuilder.setProduct(product);
-    PaymentwallWidget widget = widgetBuilder.build();
+    LinkedHashMap<String,String> additionalParameters = new LinkedHashMap<String, String>();
+    additionalParameters.put("email","user@hostname.com");
+    widgetBuilder.setExtraParams(additionalParameters);
+    Widget widget = widgetBuilder.build();
     out.println(widget.getHtmlCode());
 
 ####Pingback Processing
 
 The Pingback is a webhook notifying about a payment being made. Pingbacks are sent via HTTP/HTTPS to your servers. To process pingbacks use the following code:
 
-    PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
+    Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
     if (pingback.validate(true)) {
       String goods = pingback.getProductId();
       String userId = pingback.getUserId();
@@ -79,24 +82,24 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 ####Initializing Paymentwall
 
     @page import com.paymentwall.java.*;
-    PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
-    PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
-    PaymentwallBase.setApiType(PaymentwallBase.API_VC);
+    Base.setAppKey("YOUR_APPLICATION_KEY");
+    Base.setSecretKey("YOUR_SECRET_KEY");
+    Base.setApiType(Base.API_VC);
 
 ####Widget Call
 
     @page import java.util.ArrayList;
     @page import java.util.LinkedHashMap;
-    PaymentwallWidgetBuilder widgetBuilder = new PaymentwallWidgetBuilder("user12345","p1_1");
-    LinkedHashMap<String,ArrayList<String>> additionalparameters = new LinkedHashMap<String, ArrayList<String>>();
-    additionalparameters.put("email",new ArrayList<String>(){{add("user@hostname.com");}});
-    widgetBuilder.setExtraParams(additionalparameters);
-    PaymentwallWidget widget = widgetBuilder.build();
+    WidgetBuilder widgetBuilder = new WidgetBuilder("user12345","p1_1");
+    LinkedHashMap<String,String> additionalParameters = new LinkedHashMap<String, String>();
+    additionalParameters.put("email","user@hostname.com");
+    widgetBuilder.setExtraParams(additionalParameters);
+    Widget widget = widgetBuilder.build();
     out.println(widget.getHtmlCode());
 
 ####Pingback Processing
 
-    PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
+    Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
     if (pingback.validate(true)) {
       Double currency = pingback.getVirtualCurrencyAmount();
       String userId = pingback.getUserId();
@@ -114,38 +117,38 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 ####Initializing Paymentwall
 
     @page import com.paymentwall.java.*;
-    PaymentwallBase.setAppKey("YOUR_APPLICATION_KEY");
-    PaymentwallBase.setSecretKey("YOUR_SECRET_KEY");
-    PaymentwallBase.setApiType(PaymentwallBase.API_CART);
+    Base.setAppKey("YOUR_APPLICATION_KEY");
+    Base.setSecretKey("YOUR_SECRET_KEY");
+    Base.setApiType(Base.API_CART);
 
 
 You have to set up your products in merchant area for exact regions first in order to use widget call example code below.
 
-    PaymentwallWidgetBuilder widgetBuilder = new PaymentwallWidgetBuilder("user12345","p1_1");
-    LinkedHashMap<String,ArrayList<String>> additionalparameters = new LinkedHashMap<String, ArrayList<String>>();
-    additionalparameters.put("email",new ArrayList<String>(){{add("user@hostname.com");}});
-    final PaymentwallProduct product1 = new PaymentwallProductBuilder("product1"){{
+    WidgetBuilder widgetBuilder = new WidgetBuilder("user12345","p1_1");
+    LinkedHashMap<String,String> additionalParameters = new LinkedHashMap<String, String>();
+    additionalParameters.put("email","user@hostname.com");
+    final Product product1 = new ProductBuilder("product1"){{
       setAmount(9.99);
       setCurrencyCode("USD");
-    }}.buildPaymentwallProduct();
-    final PaymentwallProduct product2 = new PaymentwallProductBuilder("product2"){{
+    }}.build();
+    final Product product2 = new ProductBuilder("product2"){{
       setAmount(1);
       setCurrencyCode("USD");
-    }}.buildPaymentwallProduct();
-    widgetBuilder.setExtraParams(additionalparameters);
-    widgetBuilder.setProducts(new ArrayList<PaymentwallProduct>(){{
+    }}.build();
+    widgetBuilder.setExtraParams(additionalParameters);
+    widgetBuilder.setProducts(new ArrayList<Product>(){{
       add(product1);
       add(product2);
     }});
-    PaymentwallWidget widget = widgetBuilder.build();
+    Widget widget = widgetBuilder.build();
     out.println(widget.getHtmlCode());
 
 
 ####Pingback Processing
 
-    PaymentwallPingback pingback = new PaymentwallPingback(PaymentwallBase.parseQuery(request.getParameterMap()), request.getRemoteAddr());
+    Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
     if (pingback.validate(true)) {
-      ArrayList<PaymentwallProduct> goods = pingback.getProducts();
+      ArrayList<Product> goods = pingback.getProducts();
       String userId = pingback.getUserId();
       if (pingback.isDeliverable()) {
         // deliver Product to user with userId
