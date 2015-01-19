@@ -47,6 +47,8 @@ public class Pingback extends Base {
      *
      * @param skipIpWhitelistCheck if IP whitelist check should be skipped, e.g. if you have a load-balancer changing the IP
      * @return bool
+     * @throws java.io.UnsupportedEncodingException md5 and sha256 calculation Digest
+     * @throws java.security.NoSuchAlgorithmException md5 and sha256 calculation Digest
      */
 
     public boolean validate(boolean skipIpWhitelistCheck) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -67,6 +69,9 @@ public class Pingback extends Base {
 
     /**
      * @return bool
+     *
+     * @throws UnsupportedEncodingException  md5 and sha256 calculation Digest
+     * @throws NoSuchAlgorithmException md5 and sha256 calculation Digest
      */
 
 
@@ -100,10 +105,10 @@ public class Pingback extends Base {
     }
 
         if (!(parameters.containsKey("sign_version")))
-            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(DEFAULT_SIGNATURE_VERSION));}});
+            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(SIGNATURE_VERSION_1));}});
 
         if (parameters.get("sign_version").isEmpty()||parameters.get("sign_version").get(0).equals(""))
-            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(DEFAULT_SIGNATURE_VERSION));}});
+            parameters.put("sign_version",new ArrayList<String>(){{add(Integer.toString(SIGNATURE_VERSION_1));}});
 
         if (parameters.get("sign_version").get(0).equals(Integer.toString(SIGNATURE_VERSION_1)))
             for(String field : signatureParams)
@@ -112,7 +117,7 @@ public class Pingback extends Base {
 
         String signatureCalculated = calculateSignature(signatureParamsToSign, secretKey, Integer.parseInt(parameters.get("sign_version").get(0)));
         String signature = parameters.containsKey("sig") ? parameters.get("sig").get(0) : "";
-        System.out.println(signature + "==" + signatureCalculated);
+
         return signature.equals(signatureCalculated);
     }
 
@@ -373,7 +378,6 @@ public class Pingback extends Base {
             else baseString += pair.getKey() + "=" + pair.getValue().get(0);
 
         baseString += secret;
-        System.out.println("basestring: "+baseString);
 
         MessageDigest sha;
         MessageDigest md;

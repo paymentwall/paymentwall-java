@@ -40,25 +40,25 @@ abstract public class Base {
 
     /**
      * Paymentwall API type
-     * @param int apiType
+     * param int apiType
      */
     static int apiType;
 
     /**
      * Paymentwall application key - can be found in your merchant area
-     * @param string appKey
+     * param string appKey
      */
     static String appKey;
 
     /**
      * Paymentwall secret key - can be found in your merchant area
-     * @param string secretKey
+     * param string secretKey
      */
     static String secretKey;
 
     /**
      * Paymentwall Pro API Key
-     * @param string proApiKey
+     * param string proApiKey
      */
     static String proApiKey;
 
@@ -121,7 +121,7 @@ abstract public class Base {
     /**
      * Return errors
      *
-     * @return List<String>
+     * @return List of Strings
      */
     public ArrayList<String> getErrors() {
         return errors;

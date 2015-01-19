@@ -26,7 +26,7 @@ Then use a code sample below.
     <dependencies>
       <dependency>
         <groupId>com.paymentwall</groupId>
-        <artifactId>java</artifactId>
+        <artifactId>paymentwall-java</artifactId>
         <version>1.0</version>
       </dependency>
     </dependencies>

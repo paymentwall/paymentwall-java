@@ -14,15 +14,15 @@ public class Product {
     public final static String PERIOD_TYPE_MONTH = "month";
     public final static String PERIOD_TYPE_YEAR = "year";
     /**
-     * @param string productId your internal product ID, e.g. product1
-     * @param float amount product price, e.g. 9.99
-     * @param string currencyCode ISO currency code, e.g. USD
-     * @param string name product name
-     * @param string productType product type, Product.TYPE_SUBSCRIPTION for recurring billing, or Product.TYPE_FIXED for one-time payments
-     * @param int periodLength product period length, e.g. 3. Only required if product type is subscription
-     * @param string periodType product period type, e.g. Product.PERIOD_TYPE_MONTH. Only required if product type is subscription
-     * @param bool recurring if the product recurring
-     * @param Product trialProduct trial product, product type should be subscription, recurring should be True
+     * param string productId your internal product ID, e.g. product1
+     * param float amount product price, e.g. 9.99
+     * param string currencyCode ISO currency code, e.g. USD
+     * param string name product name
+     * param string productType product type, Product.TYPE_SUBSCRIPTION for recurring billing, or Product.TYPE_FIXED for one-time payments
+     * param int periodLength product period length, e.g. 3. Only required if product type is subscription
+     * param string periodType product period type, e.g. Product.PERIOD_TYPE_MONTH. Only required if product type is subscription
+     * param bool recurring if the product recurring
+     * param Product trialProduct trial product, product type should be subscription, recurring should be True
      */
     private String productId;
     private double amount;

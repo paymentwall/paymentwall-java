@@ -19,10 +19,10 @@ public class Widget extends Base
     public final String BASE_URL = "https://api.paymentwall.com/api";
 
     /**
-     * @param userId identifier of the end-user who is viewing the widget
-     * @param widgetCode e.g. p1 or p1_1, can be found inside of your Paymentwall Merchant account in the Widgets section
-     * @param ArrayList products array that consists of Product entities; for Flexible Widget Call use array of 1 product
-     * @param ArrayList extraParams associative array of additional params that will be included into the widget URL,
+     * param userId identifier of the end-user who is viewing the widget
+     * param widgetCode e.g. p1 or p1_1, can be found inside of your Paymentwall Merchant account in the Widgets section
+     * param ArrayList products array that consists of Product entities; for Flexible Widget Call use array of 1 product
+     * param ArrayList extraParams associative array of additional params that will be included into the widget URL,
      * e.g. "sign_version" or "email". Full list of parameters for each API is available at http://paymentwall.com/documentation
      */
 
@@ -40,7 +40,7 @@ public class Widget extends Base
     /**
      * Get default signature version for this API type
      *
-     * return int
+     * @return int
      */
     public int getDefaultSignatureVersion() {
         return getApiType() != API_CART ? DEFAULT_SIGNATURE_VERSION : SIGNATURE_VERSION_2;
@@ -48,7 +48,7 @@ public class Widget extends Base
     /**
      * Return URL for the widget
      *
-     * return string
+     * @return string
      */
     public String getUrl() {
         LinkedHashMap<String,ArrayList<String>> params = new LinkedHashMap<String, ArrayList<String>>();
@@ -154,8 +154,8 @@ public class Widget extends Base
     /**
      * Return HTML code for the widget
      *
-     * @param attributes associative array of additional HTML attributes, e.g. array("width" => "100%")
-     * return string
+     * @param attributes associative array of additional HTML attributes, e.g. Pairs ("width","100%")
+     * @return String
      */
     public String getHtmlCode(LinkedHashMap<String,String> attributes) {
         LinkedHashMap<String,String> defaultAttributes = new LinkedHashMap<String,String>();
@@ -179,8 +179,8 @@ public class Widget extends Base
      * Build controller URL depending on API type
      *
      * @param widget code of the widget
-     * @param flexibleCall
-     * return string
+     * @param flexibleCall boolean is the call flexible?
+     * @return String
      */
     protected String buildController(String widget, boolean flexibleCall) {
         switch (getApiType()) {
@@ -200,7 +200,7 @@ public class Widget extends Base
      * @param params parameters used for signature calculation
      * @param secret Paymentwall Secret Key
      * @param version Paymentwall Signature Version
-     * return string
+     * @return String
      */
     public static String calculateSignature(LinkedHashMap<String, ArrayList<String>> params, String secret, int version) throws NoSuchElementException {
         String baseString = "";
