@@ -84,7 +84,7 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 
 ####Initializing Paymentwall
 
-    @page import com.paymentwall.java.*;
+    import com.paymentwall.java.*;
     
 	Base.setAppKey("YOUR_APPLICATION_KEY");
     Base.setSecretKey("YOUR_SECRET_KEY");
