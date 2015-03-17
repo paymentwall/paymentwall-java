@@ -1,7 +1,6 @@
 package com.paymentwall.java;
 
 public class ProductBuilder {
-
     private double amount = 0.0;
     private String currencyCode = "";
     private String name = "";

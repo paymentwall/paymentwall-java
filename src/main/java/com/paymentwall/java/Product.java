@@ -1,18 +1,6 @@
 package com.paymentwall.java;
 
-public class Product {
-    /**
-     * Product types
-     */
-    public final static String TYPE_SUBSCRIPTION = "subscription";
-    public final static String TYPE_FIXED = "fixed";
-    /**
-     * Product period types
-     */
-    public final static String PERIOD_TYPE_DAY = "day";
-    public final static String PERIOD_TYPE_WEEK = "week";
-    public final static String PERIOD_TYPE_MONTH = "month";
-    public final static String PERIOD_TYPE_YEAR = "year";
+public class Product extends Messages {
     /**
      * param string productId your internal product ID, e.g. product1
      * param float amount product price, e.g. 9.99
