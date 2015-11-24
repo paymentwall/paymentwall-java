@@ -49,7 +49,7 @@ public class Widget extends Abstract {
             }
 
             if (version == Abstract.VERSION_THREE)
-                return String.format("%032X", new BigInteger(1, sha.digest())).toLowerCase();
+                return String.format("%064X", new BigInteger(1, sha.digest())).toLowerCase();
 
             return String.format("%032X", new BigInteger(1, md.digest())).toLowerCase();
         }
