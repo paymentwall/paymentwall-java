@@ -1,13 +1,12 @@
 package com.paymentwall.java;
 
-import com.paymentwall.java.Signature.Abstract;
+import com.paymentwall.java.signature.Abstract;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.*;
 
-public class Widget extends Instance
-{
+public class Widget extends Instance {
     /**
      * Widget call URL
      */
@@ -24,7 +23,7 @@ public class Widget extends Instance
     protected String userId;
     protected String widgetCode;
     protected ArrayList<Product> products;
-    protected HashMap<String,String> extraParams;
+    protected HashMap<String, String> extraParams;
 
     public Widget(String userId, String widgetCode, ArrayList<Product> products, HashMap<String, String> extraParams) {
         this.userId = userId;
@@ -32,6 +31,17 @@ public class Widget extends Instance
         this.products = products;
         this.extraParams = extraParams;
     }
+
+    /**
+     * Set extra parameters
+     *
+     * @param extraParams
+     */
+    public void setExtraParams(HashMap<String, String> extraParams) {
+        this.extraParams = extraParams;
+    }
+
+
     /**
      * Get default signature version for this API type
      *
@@ -40,6 +50,7 @@ public class Widget extends Instance
     public int getDefaultSignatureVersion() {
         return getApiType() == Config.API_CART ? Abstract.VERSION_TWO : Abstract.DEFAULT_VERSION;
     }
+
     /**
      * Return URL for the widget
      *
@@ -106,7 +117,7 @@ public class Widget extends Instance
             signatureVersion = getDefaultSignatureVersion();
             p.put(PARAM_SIGN_VERSION, Integer.toString(signatureVersion));
         }
-        final com.paymentwall.java.Signature.Widget widgetSignatureModel = new com.paymentwall.java.Signature.Widget();
+        final com.paymentwall.java.signature.Widget widgetSignatureModel = new com.paymentwall.java.signature.Widget();
         p.putAll(extraParams);
         p.put(PARAM_SIGN, widgetSignatureModel.calculate(new LinkedHashMap<String, ArrayList<String>>() {{
             for (final Map.Entry<String, String> entry : p.entrySet())
@@ -117,6 +128,7 @@ public class Widget extends Instance
             list.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         return BASE_URL + "/" + buildController(widgetCode) + "?" + URLEncodedUtils.format(list, "UTF-8");
     }
+
     /**
      * Return HTML code for the widget
      *
@@ -126,9 +138,9 @@ public class Widget extends Instance
     public String getHtmlCode(HashMap<String, String> attributes) {
         HashMap<String, String> defaultAttributes = new HashMap<String, String>();
         {
-            defaultAttributes.put("frameborder","0");
-            defaultAttributes.put("width","750");
-            defaultAttributes.put("height","800");
+            defaultAttributes.put("frameborder", "0");
+            defaultAttributes.put("width", "750");
+            defaultAttributes.put("height", "800");
             defaultAttributes.putAll(attributes);
         }
         String attributesQuery = "";
@@ -141,6 +153,7 @@ public class Widget extends Instance
     public String getHtmlCode() {
         return getHtmlCode(new HashMap<String, String>());
     }
+
     /**
      * Build controller URL depending on API type
      *
@@ -150,7 +163,7 @@ public class Widget extends Instance
     protected String buildController(String widget) {
         String controller = "";
         boolean isPaymentWidget = !widget.matches("^(w|s|mw).*");
-        if (getApiType()== Config.API_VC) {
+        if (getApiType() == Config.API_VC) {
             if (isPaymentWidget) {
                 controller = CONTROLLER_PAYMENT_VIRTUAL_CURRENCY;
             }

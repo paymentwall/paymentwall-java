@@ -1,6 +1,6 @@
 package com.paymentwall.java;
 
-import com.paymentwall.java.Signature.Abstract;
+import com.paymentwall.java.signature.Abstract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,7 +112,7 @@ public class Pingback extends Instance {
                     signatureParamsToSign.put(field, parameters.containsKey(field) ? parameters.get(field) : sList(""));
             else signatureParamsToSign.putAll(parameters);
 
-            com.paymentwall.java.Signature.Pingback pingbackSignatureModel = new com.paymentwall.java.Signature.Pingback();
+            com.paymentwall.java.signature.Pingback pingbackSignatureModel = new com.paymentwall.java.signature.Pingback();
             String signatureCalculated = pingbackSignatureModel.calculate(
                     signatureParamsToSign,
                     Integer.parseInt(parameters.get(PARAM_SIGN_VERSION).get(0))

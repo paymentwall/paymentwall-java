@@ -36,9 +36,9 @@ Then use a code samples below.
 
     import com.paymentwall.java.*;
 	
-    Base.setAppKey("YOUR_APPLICATION_KEY");
-    Base.setSecretKey("YOUR_SECRET_KEY");
-    Base.setApiType(Base.API_GOODS);
+	Config.getInstance().setLocalApiType(Config.API_GOODS);
+	Config.getInstance().setPublicKey("YOUR_APPLICATION_KEY");
+	Config.getInstance().setPrivateKey("YOUR_SECRET_KEY");
 
 ####Widget Call
 
@@ -86,9 +86,9 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 
     import com.paymentwall.java.*;
     
-	Base.setAppKey("YOUR_APPLICATION_KEY");
-    Base.setSecretKey("YOUR_SECRET_KEY");
-    Base.setApiType(Base.API_VC);
+    Config.getInstance().setLocalApiType(Config.API_VC);
+    Config.getInstance().setPublicKey("YOUR_APPLICATION_KEY");
+    Config.getInstance().setPrivateKey("YOUR_SECRET_KEY");
 
 ####Widget Call
 
@@ -122,9 +122,9 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 
     import com.paymentwall.java.*;
 	
-    Base.setAppKey("YOUR_APPLICATION_KEY");
-    Base.setSecretKey("YOUR_SECRET_KEY");
-    Base.setApiType(Base.API_CART);
+    Config.getInstance().setLocalApiType(Config.API_CART);
+    Config.getInstance().setPublicKey("YOUR_APPLICATION_KEY");
+    Config.getInstance().setPrivateKey("YOUR_SECRET_KEY");
 
 
 You have to set up your products in merchant area for exact regions first in order to use widget call example code below.
@@ -171,10 +171,8 @@ You have to set up your products in merchant area for exact regions first in ord
 
 ####Initializing Paymentwall
 
-	Config.getInstance().set(new LinkedHashMap<String, String>(){{
-		put("public_key", "YOUR_PUBLIC_KEY");
-		put("private_key", "YOUR_PRIVATE_KEY");
-	}});
+    Config.getInstance().setPublicKey("YOUR_APPLICATION_KEY");
+    Config.getInstance().setPrivateKey("YOUR_SECRET_KEY");
 
 ####Create a one-time token
 

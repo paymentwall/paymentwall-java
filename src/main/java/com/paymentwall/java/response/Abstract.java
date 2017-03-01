@@ -1,11 +1,11 @@
-package com.paymentwall.java.Response;
+package com.paymentwall.java.response;
 
 import com.paymentwall.java.Messages;
 import org.json.simple.JSONObject;
 
 public class Abstract extends Messages {
     protected JSONObject response = new JSONObject();
-
+    
     public Abstract(JSONObject response) {
         this.response = response;
     }

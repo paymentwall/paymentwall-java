@@ -1,6 +1,24 @@
 package com.paymentwall.java;
 
+import java.util.HashMap;
+
 public class Charge extends ApiObject implements ApiObjectInterface {
+    private UserProfile userProfile;
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    @Override
+    public ApiObject create(HashMap<String, String> params) throws Exception {
+        if(userProfile != null && params != null) params.putAll(userProfile.toParameters());
+        return super.create(params);
+    }
+
     public Charge(String id) {
         super(id);
     }
