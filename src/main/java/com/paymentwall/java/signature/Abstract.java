@@ -1,4 +1,4 @@
-package com.paymentwall.java.Signature;
+package com.paymentwall.java.signature;
 
 import java.util.*;
 

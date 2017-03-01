@@ -1,6 +1,8 @@
 package com.paymentwall.java;
 
-public class Messages {
+import java.util.Map;
+
+public abstract class Messages {
     /**
      * Brick API properties
      */
@@ -23,12 +25,14 @@ public class Messages {
     protected static final String PROP_RISK_STATUS = "risk";
     protected static final String PROP_ISREFUNDED = "refunded";
     protected static final String PROP_CARD_NO = "card";
+    protected static final String PROP_SECURE = "secure";
 
     /**
      * Brick API response types
      */
     protected static final String RESPONSE_SUCCESS = "success";
     protected static final String RESPONSE_ERROR = "error";
+    protected static final String RESPONSE_SECURE= "secure";
 
     /**
      * Brick API error messages
@@ -122,4 +126,69 @@ public class Messages {
     public final static String PERIOD_TYPE_WEEK = "week";
     public final static String PERIOD_TYPE_MONTH = "month";
     public final static String PERIOD_TYPE_YEAR = "year";
+
+    /**
+     * User profile parameters
+     */
+    protected static final String USER_PROFILE_EMAIL = "email";
+    protected static final String USER_PROFILE_REGISTRATION_DATE = "history[registration_date]";
+    protected static final String USER_PROFILE_BIRTHDAY = "customer[birthday]";
+    protected static final String USER_PROFILE_SEX = "customer[sex]";
+    protected static final String USER_PROFILE_USERNAME = "customer[username]";
+    protected static final String USER_PROFILE_FIRSTNAME = "customer[firstname]";
+    protected static final String USER_PROFILE_LASTNAME = "customer[lastname]";
+    protected static final String USER_PROFILE_CITY = "customer[city]";
+    protected static final String USER_PROFILE_STATE = "customer[state]";
+    protected static final String USER_PROFILE_ADDRESS = "customer[address]";
+    protected static final String USER_PROFILE_COUNTRY = "customer[country]";
+    protected static final String USER_PROFILE_ZIP = "customer[zip]";
+    protected static final String USER_PROFILE_MEMBERSHIP = "history[membership]";
+    protected static final String USER_PROFILE_MEMBERSHIP_DATE = "history[membership_date]";
+    protected static final String USER_PROFILE_REGISTRATION_COUNTRY = "history[registration_country]";
+    protected static final String USER_PROFILE_REGISTRATION_IP = "history[registration_ip]";
+    protected static final String USER_PROFILE_REGISTRATION_EMAIL = "history[registration_email]";
+    protected static final String USER_PROFILE_REGISTRATION_EMAIL_VERIFIED = "history[registration_email_verified]";
+    protected static final String USER_PROFILE_REGISTRATION_NAME = "history[registration_name]";
+    protected static final String USER_PROFILE_REGISTRATION_LASTNAME = "history[registration_lastname]";
+    protected static final String USER_PROFILE_REGISTRATION_SOURCE = "history[registration_source]";
+    protected static final String USER_PROFILE_LOGINS_NUMBER = "history[logins_number]";
+    protected static final String USER_PROFILE_PAYMENTS_NUMBER = "history[payments_number]";
+    protected static final String USER_PROFILE_PAYMENTS_AMOUNT = "history[payments_amount]";
+    protected static final String USER_PROFILE_FOLLOWERS = "history[followers]";
+    protected static final String USER_PROFILE_MESSAGE_SENT = "history[messages_sent]";
+    protected static final String USER_PROFILE_MESSAGE_SENT_LAST_24H = "history[messages_sent_last_24hours]";
+    protected static final String USER_PROFILE_MESSAGE_RECEIVED = "history[messages_received]";
+    protected static final String USER_PROFILE_INTERACTIONS = "history[interactions]";
+    protected static final String USER_PROFILE_INTERACTIONS_LAST_24H = "history[interactions_last_24hours]";
+    protected static final String USER_PROFILE_RISK_SCORE = "history[risk_score]";
+    protected static final String USER_PROFILE_COMPLAINTS = "history[complaints]";
+    protected static final String USER_PROFILE_WAS_BANNED = "history[was_banned]";
+    protected static final String USER_PROFILE_DELIVERED_PRODUCTS = "history[delivered_products]";
+    protected static final String USER_PROFILE_CANCELED_PAYMENTS = "history[cancelled_payments]";
+    protected static final String USER_PROFILE_RATING = "history[customer_rating]";
+    protected static final String USER_PROFILE_REGISTRATION_AGE = "history[registration_age]";
+    protected static final String USER_PROFILE_ENABLE_3D_SECURE = "3dsecure";
+
+    public static String val(Object object) {
+        if(object == null) throw new NullPointerException("Value must be non null");
+        if(object instanceof String) return (String) object;
+        else if(object instanceof Integer
+                || object instanceof Float
+                || object instanceof Double
+                || object instanceof Long) {
+            return String.valueOf(object);
+        } else if(object instanceof Boolean) {
+            if((Boolean) object) {
+                return "1";
+            } else {
+                return "0";
+            }
+        } else {
+            throw new IllegalArgumentException("Data type is not accepted");
+        }
+    }
+
+    public static boolean isNullOrEmpty(String string) {
+        return (string == null || string.isEmpty());
+    }
 }

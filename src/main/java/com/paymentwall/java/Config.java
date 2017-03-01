@@ -5,7 +5,7 @@ import java.net.URLDecoder;
 import java.util.*;
 
 public class Config extends Messages{
-    final static String VERSION = "2.0.0";
+    final static String VERSION = "2.1.0";
 
     final static String API_BASE_URL = "https://api.paymentwall.com/api";
 
@@ -24,24 +24,20 @@ public class Config extends Messages{
 
     public String getApiBaseUrl() { return apiBaseUrl; }
 
-    public void setApiBaseUrl() { apiBaseUrl = ""; }
     public void setApiBaseUrl(String url) { apiBaseUrl = url; }
 
     public int getLocalApiType() { return apiType; }
 
-    public void setLocalApiType() { apiType = 0; }
-    public void setLocalApiType(int apiType_) {
-        apiType = apiType_;
+    public void setLocalApiType(int apiType) {
+        this.apiType = apiType;
     }
 
     public String getPublicKey() { return publicKey; }
 
-    public void setPublicKey() { publicKey = ""; }
     public void setPublicKey(String key) { publicKey = key; }
 
     public String getPrivateKey() { return privateKey; }
 
-    public void setPrivateKey() { privateKey = ""; }
     public void setPrivateKey(String key) { privateKey = key; }
 
     public String getVersion() { return VERSION; }

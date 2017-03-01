@@ -1,4 +1,4 @@
-package com.paymentwall.java.Response;
+package com.paymentwall.java.response;
 
 import org.json.simple.JSONObject;
 

@@ -1,7 +1,7 @@
 package com.paymentwall.java;
 
-import com.paymentwall.java.Response.Factory;
-import com.paymentwall.java.Response.Interface;
+import com.paymentwall.java.response.Factory;
+import com.paymentwall.java.response.Interface;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,7 +25,7 @@ public abstract class ApiObject extends Instance {
      * @return ApiObject with API response stored as json
      * @throws Exception in case of IOError or empty response from server
      */
-    public final ApiObject create(final HashMap<String, String> params) throws Exception {
+    public ApiObject create(final HashMap<String, String> params) throws Exception {
         final HttpActionBuilder httpActionBuilder = new HttpActionBuilder(this) {{
             setParams(params);
             setHeaders(sList(getApiBaseHeader()));

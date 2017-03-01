@@ -1,4 +1,4 @@
-package com.paymentwall.java.Response;
+package com.paymentwall.java.response;
 
 import org.json.simple.JSONObject;
 
@@ -8,7 +8,7 @@ public class Success extends Abstract implements Interface {
     public JSONObject process() {
         if (response.isEmpty())
             return wrapInternalError();
-        response = new JSONObject();
+//        response = new JSONObject();
         response.put(PROP_SUCCESS, 1);
         return response;
     }

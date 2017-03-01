@@ -1,11 +1,8 @@
-package com.paymentwall.java.Signature;
+package com.paymentwall.java.signature;
 
 import com.paymentwall.java.Config;
+import com.paymentwall.java.utils.HashUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,23 +20,8 @@ public class Pingback extends Abstract  {
 
         baseString += getConfig().getPrivateKey();
 
-        MessageDigest sha;
-        MessageDigest md;
-        try {
-            sha = MessageDigest.getInstance("SHA-256");
-            sha.update(baseString.getBytes("UTF-8"));
-            md = MessageDigest.getInstance("MD5");
-            md.update(baseString.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return "";
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return "";
-        }
-        if (version == Abstract.VERSION_THREE) return String.format("%064X", new BigInteger(1, sha.digest())).toLowerCase();
-
-        return String.format("%032X", new BigInteger(1, md.digest())).toLowerCase();
+        if (version == Abstract.VERSION_THREE) return HashUtils.sha256String(baseString);
+        else return HashUtils.md5String(baseString);
     }
 
     public String prepareParams(HashMap<String,ArrayList<String>> params, String baseString) {
