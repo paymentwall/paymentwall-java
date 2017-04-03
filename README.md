@@ -1,16 +1,16 @@
-#About Paymentwall
+# About Paymentwall
 [Paymentwall](http://paymentwall.com/?source=gh) is the leading digital payments platform for globally monetizing digital goods and services. Paymentwall assists game publishers, dating sites, rewards sites, SaaS companies and many other verticals to monetize their digital content and services. 
 Merchants can plugin Paymentwall's API to accept payments from over 100 different methods including credit cards, debit cards, bank transfers, SMS/Mobile payments, prepaid cards, eWallets, landline payments and others. 
 
 To sign up for a Paymentwall Merchant Account, [click here](http://paymentwall.com/signup/merchant?source=gh).
 
-#Paymentwall Java Library
+# Paymentwall Java Library
 This library allows developers to use [Paymentwall APIs](http://paymentwall.com/en/documentation/API-Documentation/722?source=gh) (Virtual Currency, Digital Goods featuring recurring billing, and Virtual Cart).
 
 To use Paymentwall, all you need to do is to sign up for a Paymentwall Merchant Account so you can setup an Application designed for your site.
 To open your merchant account and set up an application, you can [sign up here](http://paymentwall.com/signup/merchant?source=gh).
 
-#Installation
+# Installation
 To install the library in your environment, you can download the [ZIP archive](https://github.com/paymentwall/paymentwall-java/archive/master.zip), unzip it and place into your project.
 
 Alternatively, you can run:
@@ -18,9 +18,9 @@ Alternatively, you can run:
     git clone git://github.com/paymentwall/paymentwall-java.git
 
 Then use a code samples below.
-#Code Samples
+# Code Samples
 
-##Adding Paymentwall to your project using Apache Maven
+## Adding Paymentwall to your project using Apache Maven
 
     <dependencies>
 		<dependency>
@@ -30,9 +30,9 @@ Then use a code samples below.
 		</dependency>
     </dependencies>
 
-##Digital Goods API
+## Digital Goods API
 
-####Initializing Paymentwall
+#### Initializing Paymentwall
 
     import com.paymentwall.java.*;
 	
@@ -40,7 +40,7 @@ Then use a code samples below.
 	Config.getInstance().setPublicKey("YOUR_APPLICATION_KEY");
 	Config.getInstance().setPrivateKey("YOUR_SECRET_KEY");
 
-####Widget Call
+#### Widget Call
 
 [Web API details](http://www.paymentwall.com/en/documentation/Digital-Goods-API/710#paymentwall_widget_call_flexible_widget_call)
 
@@ -63,7 +63,7 @@ The widget is a payment page hosted by Paymentwall that embeds the entire paymen
 	Widget w = widgetBuilder.build();
 	return w.getHtmlCode();
 
-####Pingback Processing
+#### Pingback Processing
 
 The Pingback is a webhook notifying about a payment being made. Pingbacks are sent via HTTP/HTTPS to your servers. To process pingbacks use the following code:
 
@@ -80,9 +80,9 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 	} else
 		return pingback.getErrorSummary();
 
-##Virtual Currency API
+## Virtual Currency API
 
-####Initializing Paymentwall
+#### Initializing Paymentwall
 
     import com.paymentwall.java.*;
     
@@ -90,7 +90,7 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
     Config.getInstance().setPublicKey("YOUR_APPLICATION_KEY");
     Config.getInstance().setPrivateKey("YOUR_SECRET_KEY");
 
-####Widget Call
+#### Widget Call
 
     WidgetBuilder widgetBuilder = new WidgetBuilder("user12345","p1_1");
 	widgetBuilder.setExtraParams(
@@ -101,7 +101,7 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 	Widget w = widgetBuilder.build();
     return w.getHtmlCode();
 
-####Pingback Processing
+#### Pingback Processing
 
     Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
 	if (pingback.validate(true)) {
@@ -116,9 +116,9 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 	} else
 		return pingback.getErrorSummary();
 
-##Cart API
+## Cart API
 
-####Initializing Paymentwall
+#### Initializing Paymentwall
 
     import com.paymentwall.java.*;
 	
@@ -152,7 +152,7 @@ You have to set up your products in merchant area for exact regions first in ord
 	Widget w = widgetBuilder.build();
     return w.getHtmlCode();
 
-####Pingback Processing
+#### Pingback Processing
 
     Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
 	if (pingback.validate(true)) {
@@ -167,14 +167,14 @@ You have to set up your products in merchant area for exact regions first in ord
 	} else
 		return pingback.getErrorSummary();
 
-##Brick
+## Brick
 
-####Initializing Paymentwall
+#### Initializing Paymentwall
 
     Config.getInstance().setPublicKey("YOUR_APPLICATION_KEY");
     Config.getInstance().setPrivateKey("YOUR_SECRET_KEY");
 
-####Create a one-time token
+#### Create a one-time token
 
 	OneTimeToken token = new OneTimeToken();
 	token = (OneTimeToken) token.create(new LinkedHashMap<String, String>(){{
@@ -186,7 +186,7 @@ You have to set up your products in merchant area for exact regions first in ord
 	}});
 	return token.getToken();
 
-####Charge
+#### Charge
 
 	Charge charge = new Charge();
 	charge = (Charge)charge.create(new HashMap<String, String>(){{
@@ -211,13 +211,13 @@ You have to set up your products in merchant area for exact regions first in ord
 		}
 	return response.toString(); // need for JS communication
 
-####Charge - refund
+#### Charge - refund
 
 	Charge charge = new Charge("CHARGE_ID");
 	charge = (Charge)charge.refund();
 	return charge.isRefunded();
 
-####Subscription
+#### Subscription
 
 	Subscription subscription = new Subscription();
 	subscription = (Subscription) subscription.create( new HashMap<String, String>() {{
@@ -237,13 +237,13 @@ You have to set up your products in merchant area for exact regions first in ord
 	}});
 	return subscription.get("id");
 
-####Subscription - cancel
+#### Subscription - cancel
 
 	Subscription subscription = new Subscription("SUBSCRIPTION_ID");
 		subscription = (Subscription)(subscription.cancel());
 	return subscription.isActive();
 
-###Signature calculation - Widget
+### Signature calculation - Widget
 
 	Signature.Widget widgetSignatureModel = new Signature.Widget();
 	return widgetSignatureModel.calculate(
@@ -251,7 +251,7 @@ You have to set up your products in merchant area for exact regions first in ord
 		2 // signature version
 	);
 
-###Singature calculation - Pingback
+### Singature calculation - Pingback
 
     Signature.Pingback pingbackSignatureModel = new Signature.Pingback();
     return pingbackSignatureModel.calculate(
