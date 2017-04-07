@@ -19,6 +19,8 @@ public class Pingback extends Instance {
         public final int PINGBACK_TYPE_RISK_REVIEWED_ACCEPTED = 201;
         public final int PINGBACK_TYPE_RISK_REVIEWED_DECLINED = 202;
 
+        public final int PINGBACK_TYPE_RISK_AUTHORIZATION_VOIDED = 203;
+
         public final int PINGBACK_TYPE_SUBSCRIPTION_CANCELLATION = 12;
         public final int PINGBACK_TYPE_SUBSCRIPTION_EXPIRED = 13;
         public final int PINGBACK_TYPE_SUBSCRIPTION_PAYMENT_FAILED = 14;
