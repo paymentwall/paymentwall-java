@@ -19,11 +19,17 @@ public abstract class Factory extends Messages {
     }
 
     public static String getClassName(JSONObject response) {
+        if (response.isEmpty() || (response.containsKey(PROP_TYPE)
+                && response.get(PROP_TYPE).toString().equals(VALUE_ERROR))) {
+            return RESPONSE_ERROR;
+        } else if(response.containsKey(PROP_SECURE)) {
+            return RESPONSE_SECURE;
+        } else return RESPONSE_SUCCESS;
 
-        if(response.containsKey(PROP_OBJECT_CHARGE) && response.containsKey(PROP_CARD_NO))
+        /*if(response.containsKey(PROP_OBJECT_CHARGE) && response.containsKey(PROP_CARD_NO))
             return RESPONSE_SUCCESS;
         else if(response.containsKey(PROP_SECURE))
             return RESPONSE_SECURE;
-        else return RESPONSE_ERROR;
+        else return RESPONSE_ERROR;*/
     }
 }
