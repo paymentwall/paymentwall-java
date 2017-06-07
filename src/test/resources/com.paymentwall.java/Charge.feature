@@ -20,4 +20,4 @@ Feature: Charge
     And Brick Private key "t_85c66c2d7461e8885805f92dfd171c"
     And CVV code "123"
     When test token is retrieved
-    Then I see this error message "Please contact your credit card company to approve your payment"
+    Then I see this error message "The transaction was declined. Please use a different card or contact your bank"
