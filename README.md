@@ -46,7 +46,7 @@ Then use a code samples below.
 
 The widget is a payment page hosted by Paymentwall that embeds the entire payment flow: selecting the payment method, completing the billing details, and providing customer support via the Help section. You can redirect the users to this page or embed it via iframe. Below is an example that renders an iframe with Paymentwall Widget.
 
-    WidgetBuilder widgetBuilder = new WidgetBuilder("user12345", "fp");
+    WidgetBuilder widgetBuilder = new WidgetBuilder("user12345", "pw");
 	widgetBuilder.setProduct(
 		new ProductBuilder("product301") {{
 			setAmount(0.99);
