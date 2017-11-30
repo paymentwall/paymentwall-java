@@ -119,7 +119,7 @@ public class Pingback extends Instance {
                     signatureParamsToSign.put(field, parameters.containsKey(field) ? parameters.get(field) : sList(""));
             else signatureParamsToSign.putAll(parameters);
 
-            com.paymentwall.java.signature.Pingback pingbackSignatureModel = new com.paymentwall.java.signature.Pingback();
+            com.paymentwall.java.signature.Pingback pingbackSignatureModel = new com.paymentwall.java.signature.Pingback(config);
             String signatureCalculated = pingbackSignatureModel.calculate(
                     signatureParamsToSign,
                     Integer.parseInt(parameters.get(PARAM_SIGN_VERSION).get(0))
