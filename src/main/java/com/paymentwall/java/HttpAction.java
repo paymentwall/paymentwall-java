@@ -25,6 +25,11 @@ public class HttpAction extends Instance {
     private static final int httpTimeoutMs = 60000;
 
     HttpAction(ApiObject object, HashMap<String, String> params, ArrayList<String> headers) {
+        this(Config.getInstance(), object, params, headers);
+    }
+
+    HttpAction(Config config, ApiObject object, HashMap<String, String> params, ArrayList<String> headers) {
+        super(config);
         setApiObject(object);
         setApiParams(params);
         setApiHeaders(headers);

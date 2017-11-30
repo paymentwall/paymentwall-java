@@ -26,6 +26,11 @@ public class Widget extends Instance {
     protected HashMap<String, String> extraParams;
 
     public Widget(String userId, String widgetCode, ArrayList<Product> products, HashMap<String, String> extraParams) {
+        this(Config.getInstance(), userId, widgetCode, products, extraParams);
+    }
+
+    public Widget(Config config, String userId, String widgetCode, ArrayList<Product> products, HashMap<String, String> extraParams) {
+        super(config);
         this.userId = userId;
         this.widgetCode = widgetCode;
         this.products = products;

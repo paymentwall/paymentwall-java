@@ -1,6 +1,7 @@
 package com.paymentwall.java.signature;
 
 
+import com.paymentwall.java.Config;
 import com.paymentwall.java.utils.HashUtils;
 
 import java.security.MessageDigest;
@@ -10,6 +11,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Widget extends Abstract {
+
+    public Widget() {
+    }
+
+    public Widget(Config config) {
+        super(config);
+    }
+
     public String process(LinkedHashMap<String, ArrayList<String>> params, int version) {
         String baseString = "";
         MessageDigest md;

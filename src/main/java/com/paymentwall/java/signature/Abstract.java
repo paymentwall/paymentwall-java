@@ -1,5 +1,7 @@
 package com.paymentwall.java.signature;
 
+import com.paymentwall.java.Config;
+
 import java.util.*;
 
 public abstract class Abstract extends com.paymentwall.java.Instance {
@@ -7,6 +9,14 @@ public abstract class Abstract extends com.paymentwall.java.Instance {
     public static final int VERSION_TWO = 2;
     public static final int VERSION_THREE = 3;
     public static final int DEFAULT_VERSION = VERSION_THREE;
+
+    protected Abstract() {
+        super();
+    }
+
+    protected Abstract(Config config) {
+        super(config);
+    }
 
     abstract String process(LinkedHashMap<String,ArrayList<String>> params, int version);
 

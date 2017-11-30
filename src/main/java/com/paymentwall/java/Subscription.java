@@ -2,7 +2,11 @@ package com.paymentwall.java;
 
 public class Subscription extends ApiObject implements ApiObjectInterface {
     public Subscription(String id) {
-        super(id);
+        this(Config.getInstance(), id);
+    }
+
+    public Subscription(Config config, String id) {
+        super(config, id);
     }
 
     public Subscription() {}

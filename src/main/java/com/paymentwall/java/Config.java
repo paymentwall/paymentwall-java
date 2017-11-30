@@ -20,8 +20,6 @@ public class Config extends Messages{
 
     private static final Config instance = new Config();
 
-    protected Config() {} //no default constructor
-
     public String getApiBaseUrl() { return apiBaseUrl; }
 
     public void setApiBaseUrl(String url) { apiBaseUrl = url; }

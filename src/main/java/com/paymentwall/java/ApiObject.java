@@ -15,7 +15,16 @@ public abstract class ApiObject extends Instance {
     abstract String getEndpointName();
 
     protected ApiObject(String id) {
+        this(Config.getInstance(), id);
+    }
+
+    protected ApiObject(Config config, String id) {
+        super(config);
         this.id = id;
+    }
+
+    protected ApiObject(Config config) {
+        super(config);
     }
 
     protected ApiObject() {}

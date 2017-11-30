@@ -42,6 +42,10 @@ public class Pingback extends Instance {
          */
         @SuppressWarnings("deprecated")
         public Pingback(Map<String, String[]> parameters, String ipAddress) {
+            this(Config.getInstance(), parameters, ipAddress);
+        }
+
+        public Pingback(Config config, Map<String, String[]> parameters, String ipAddress) {
             this.parameters = Base.parseQuery(parameters);
             this.ipAddress = ipAddress;
         }

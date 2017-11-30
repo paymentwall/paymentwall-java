@@ -3,10 +3,18 @@ package com.paymentwall.java;
 import java.util.ArrayList;
 
 public abstract class Instance extends Messages {
-    protected Config config = Config.getInstance();
+    protected Config config;
     protected ArrayList<String> errors = new ArrayList<String>();
 
     public enum httpMethod {GET, POST}
+
+    protected Instance() {
+        this(Config.getInstance());
+    }
+
+    public Instance(Config config) {
+        this.config = config;
+    }
 
     public String getErrorSummary() {
       String result = "";
@@ -17,7 +25,6 @@ public abstract class Instance extends Messages {
     }
 
     protected Config getConfig() {
-        if (config==null) { config = Config.getInstance(); }
         return config;
     }
 

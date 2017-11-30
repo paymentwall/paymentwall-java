@@ -5,6 +5,10 @@ import java.util.HashMap;
 public class Charge extends ApiObject implements ApiObjectInterface {
     private UserProfile userProfile;
 
+    public Charge(Config config) {
+        super(config);
+    }
+
     public UserProfile getUserProfile() {
         return userProfile;
     }
@@ -20,7 +24,11 @@ public class Charge extends ApiObject implements ApiObjectInterface {
     }
 
     public Charge(String id) {
-        super(id);
+        this(Config.getInstance(), id);
+    }
+
+    public Charge(Config config, String id) {
+        super(config, id);
     }
 
     public Charge() {}

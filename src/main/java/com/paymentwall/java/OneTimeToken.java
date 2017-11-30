@@ -5,7 +5,15 @@ public class OneTimeToken extends ApiObject {
     public OneTimeToken() {}
 
     public OneTimeToken(String id) {
-        super(id);
+        this(Config.getInstance(), id);
+    }
+
+    public OneTimeToken(Config config, String id) {
+        super(config, id);
+    }
+
+    public OneTimeToken(Config config) {
+        super(config);
     }
 
     public String getToken() { return get(PROP_TOKEN); }

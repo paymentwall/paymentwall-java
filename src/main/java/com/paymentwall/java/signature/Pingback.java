@@ -9,6 +9,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Pingback extends Abstract  {
+
+    public Pingback() {
+    }
+
+    public Pingback(Config config) {
+        super(config);
+    }
+
     public String process(LinkedHashMap<String,ArrayList<String>> params, int version) {
         String baseString = "";
 
