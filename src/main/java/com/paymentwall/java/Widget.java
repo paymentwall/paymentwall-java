@@ -122,7 +122,7 @@ public class Widget extends Instance {
             signatureVersion = getDefaultSignatureVersion();
             p.put(PARAM_SIGN_VERSION, Integer.toString(signatureVersion));
         }
-        final com.paymentwall.java.signature.Widget widgetSignatureModel = new com.paymentwall.java.signature.Widget();
+        final com.paymentwall.java.signature.Widget widgetSignatureModel = new com.paymentwall.java.signature.Widget(getConfig());
         p.putAll(extraParams);
         p.put(PARAM_SIGN, widgetSignatureModel.calculate(new LinkedHashMap<String, ArrayList<String>>() {{
             for (final Map.Entry<String, String> entry : p.entrySet())
