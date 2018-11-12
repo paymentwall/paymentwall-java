@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.net.util.SubnetUtils;
+
 public class Pingback extends Instance {
         /**
          * Pingback types
@@ -135,6 +137,14 @@ public class Pingback extends Instance {
                 ipsWhitelist.add("174.36.92.187");
                 ipsWhitelist.add("174.36.92.192");
                 ipsWhitelist.add("174.37.14.28");
+            }
+            
+            SubnetUtils utils = new SubnetUtils("216.127.71.0/24");
+            String[] allIps = utils.getInfo().getAllAddresses();
+            
+            for (int i = 0; i < allIps.length; i++) 
+            {
+             ipsWhitelist.add(allIps[i]);
             }
 
             return ipsWhitelist.contains(ipAddress);
