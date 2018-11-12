@@ -68,7 +68,7 @@ The widget is a payment page hosted by Paymentwall that embeds the entire paymen
 The Pingback is a webhook notifying about a payment being made. Pingbacks are sent via HTTP/HTTPS to your servers. To process pingbacks use the following code:
 
     Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
-	if (pingback.validate(true)) {
+	if (pingback.validate()) {
 		String goods = pingback.getProductId();
 		String userId = pingback.getUserId();
 		if (pingback.isDeliverable()) {
@@ -104,7 +104,7 @@ The Pingback is a webhook notifying about a payment being made. Pingbacks are se
 #### Pingback Processing
 
     Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
-	if (pingback.validate(true)) {
+	if (pingback.validate()) {
 		Integer currency = pingback.getVirtualCurrencyAmount();
 		String userId = pingback.getUserId();
 		if (pingback.isDeliverable()) {
@@ -155,7 +155,7 @@ You have to set up your products in merchant area for exact regions first in ord
 #### Pingback Processing
 
     Pingback pingback = new Pingback(request.getParameterMap(), request.getRemoteAddr());
-	if (pingback.validate(true)) {
+	if (pingback.validate()) {
 		ArrayList<Product> goods = pingback.getProducts();
 		String userId = pingback.getUserId();
 		if (pingback.isDeliverable()) {
