@@ -71,6 +71,7 @@ public abstract class Messages {
     protected static final String PARAM_EXTERNAL_IDS = "external_ids";
     protected static final String PARAM_PRICES = "prices";
     protected static final String PARAM_CURRENCIES = "currencies";
+    protected static final String PARAM_NAMES = "names";
 
     /**
      * Pingback types verbal meaning
