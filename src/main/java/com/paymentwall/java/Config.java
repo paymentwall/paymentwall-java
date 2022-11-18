@@ -77,6 +77,7 @@ public class Config extends Messages{
                                 add(this.size(), parameters.get(finalFixedKey).get(i));
                         }
                         try {
+                            value = value.replaceAll("\\+", "%2B");
                             add(this.size(), URLDecoder.decode(value, "UTF-8"));
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
