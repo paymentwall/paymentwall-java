@@ -103,9 +103,15 @@ public class Widget extends Instance {
             int i = 0;
             for (final Product product : products) {
                 p.put(PARAM_EXTERNAL_IDS + "[" + i + "]", product.getId());
-                if (product.getAmount() > 0.0) p.put(PARAM_PRICES + "[" + i + "]", String.valueOf(product.getAmount()));
-                if (!product.getCurrencyCode().equals(""))
+                if (product.getAmount() > 0.0) {
+                    p.put(PARAM_PRICES + "[" + i + "]", String.valueOf(product.getAmount()));
+                }
+                if (!product.getCurrencyCode().equals("")) {
                     p.put(PARAM_CURRENCIES + "[" + i + "]", product.getCurrencyCode());
+                }
+                if (!product.getName().equals("")) {
+                    p.put(PARAM_NAMES + "[" + i + "]", product.getName());
+                }
                 i++;
             }
         }
